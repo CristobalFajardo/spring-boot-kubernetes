@@ -61,20 +61,20 @@ steps:
 #
 #
 
-- task: dependency-check-build-task@6
+#- task: dependency-check-build-task@6
+#  inputs:
+#    projectName: 'spring-boot-kubernetes'
+#    scanPath: '$(Build.SourcesDirectory)/build/libs'
+#    format: 'HTML'
+#
+- task: DockerInstaller@0
   inputs:
-    projectName: 'spring-boot-kubernetes'
-    scanPath: '$(Build.SourcesDirectory)/build/libs'
-    format: 'HTML'
-#
-#- task: DockerInstaller@0
-#  inputs:
-#    dockerVersion: '17.09.0-ce'
-#
-#- task: Docker@2
-#  inputs:
-#    containerRegistry: 'Docker'
-#    command: 'login'
+    dockerVersion: '17.09.0-ce'
+    
+- task: Docker@2
+  inputs:
+    containerRegistry: 'Docker'
+    command: 'login'
 #
 #- task: Docker@2
 #  inputs:
