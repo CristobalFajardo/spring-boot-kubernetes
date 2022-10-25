@@ -70,11 +70,19 @@ steps:
 - task: DockerInstaller@0
   inputs:
     dockerVersion: '17.09.0-ce'
-    
+
 - task: Docker@2
   inputs:
     containerRegistry: 'Docker'
     command: 'login'
+- task: Docker@2
+  inputs:
+    containerRegistry: 'Docker'
+    repository: 'cristobalfajardo/devops-cristobal2'
+    command: 'build'
+    Dockerfile: '**/Dockerfile'
+    tags: latest
+  displayName: Build Image
 #
 #- task: Docker@2
 #  inputs:
@@ -96,3 +104,10 @@ steps:
 #    repository: 'clagosu/pet-clinic'
 #    command: 'push'
 #    tags: 'latest'
+- task: Docker@2
+  displayName: Docker push
+  inputs:
+    containerRegistry: 'Docker'
+    repository: 'cristobalfajardo/devops-cristobal2'
+    command: 'push'
+    tags: 'latest'
