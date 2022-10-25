@@ -22,10 +22,18 @@ steps:
     effectivePomSkip: false
     sonarQubeRunAnalysis: false
 
+- task: SonarCloudPrepare@1
+  inputs:
+    SonarCloud: 'sonar-conexion2'
+    organization: 'cristobalfajardo'
+    #scannerMode: 'MSBuild'
+    projectKey: 'CristobalFajardo_spring-boot-kubernetes'
+    projectName: 'cristobalfajardo'
+
 #- task: SonarCloudPrepare@1
 #  inputs:
-#    SonarCloud: 'Sonarcloud'
-#    organization: 'devops-test-v3'
+#   SonarCloud: 'sonar-conexion2'
+    #organization: 'cristobalfajardo'
 #    projectKey: 'DevOps-Test-v3_pet-clinic'
 #    projectName: 'pet-clinic'
 #
