@@ -60,11 +60,12 @@ steps:
 #    spotBugsAnalysis: false
 #
 #
-#- task: dependency-check-build-task@6
-#  inputs:
-#    projectName: 'pet-clinic'
-#    scanPath: '$(Build.SourcesDirectory)/build/libs'
-#    format: 'HTML'
+
+- task: dependency-check-build-task@6
+  inputs:
+    projectName: 'spring-boot-kubernetes'
+    scanPath: '$(Build.SourcesDirectory)/build/libs'
+    format: 'HTML'
 #
 #- task: DockerInstaller@0
 #  inputs:
