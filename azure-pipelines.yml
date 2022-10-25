@@ -17,9 +17,7 @@ steps:
     tasks: 'build'
     publishJUnitResults: true
     testResultsFiles: '**/TEST-*.xml'
-    javaHomeOption: 'JDKVersion'
-    sonarQubeRunAnalysis: false
-    spotBugsAnalysis: false
+
 #- task: SonarCloudPrepare@1
 #  inputs:
 #    SonarCloud: 'Sonarcloud'
