@@ -1,103 +1,76 @@
 pool:
   vmImage: ubuntu-latest
+stages:
+- stage: Build 
+  jobs:
+  - job: build
+    displayName: 'Build'
+    steps:
+    - task: Maven@4
+      inputs:
+        mavenPomFile: 'pom.xml'
+        publishJUnitResults: true
+        testResultsFiles: '**/surefire-reports/TEST-*.xml'
+        javaHomeOption: 'JDKVersion'
+        mavenVersionOption: 'Default'
+        mavenAuthenticateFeed: false
+        effectivePomSkip: false
+        sonarQubeRunAnalysis: false
 
-steps:
-- task: Maven@4
-  inputs:
-    mavenPomFile: 'pom.xml'
-    publishJUnitResults: true
-    testResultsFiles: '**/surefire-reports/TEST-*.xml'
-    javaHomeOption: 'JDKVersion'
-    mavenVersionOption: 'Default'
-    mavenAuthenticateFeed: false
-    effectivePomSkip: false
-    sonarQubeRunAnalysis: false
-
-- task: SonarCloudPrepare@1
-  inputs:
-    SonarCloud: 'sonar-conexion2'
-    organization: 'cristobalfajardo'
-    projectKey: 'CristobalFajardo_spring-boot-kubernetes'
-    projectName: 'cristobalfajardo'
-    
-
-#- task: SonarCloudPrepare@1
-#  inputs:
-#   SonarCloud: 'sonar-conexion2'
-    #organization: 'cristobalfajardo'
-#    projectKey: 'DevOps-Test-v3_pet-clinic'
-#    projectName: 'pet-clinic'
-- task: Maven@4
-  inputs:
-    mavenPomFile: 'pom.xml'
-    publishJUnitResults: true
-    testResultsFiles: '**/surefire-reports/TEST-*.xml'
-    javaHomeOption: 'JDKVersion'
-    mavenVersionOption: 'Default'
-    sonarQubeRunAnalysis: true
-    
-
-#- task: Gradle@3
-#  inputs:
-#    gradleWrapperFile: 'gradlew'
-#    tasks: 'sonarqube'
-#    publishJUnitResults: true
-#    testResultsFiles: '**/TEST-*.xml'
-#    javaHomeOption: 'JDKVersion'
-#    sonarQubeRunAnalysis: true
-#    sqGradlePluginVersionChoice: 'specify'
-#    sonarQubeGradlePluginVersion: '3.3'
-#    spotBugsAnalysis: false
-#
-#
-
-- task: dependency-check-build-task@6
-  inputs:
-    projectName: 'spring-boot-kubernetes'
-    scanPath: '$(Build.ArtifactStagingDirectory)'
-    format: 'HTML'
-
-- task: DockerInstaller@0
-  inputs:
-    dockerVersion: '17.09.0-ce'
-
-- task: Docker@2
-  inputs:
-    containerRegistry: 'Docker'
-    command: 'login'
-- task: Docker@2
-  inputs:
-    containerRegistry: 'Docker'
-    repository: 'cristobalfajardo/devops-cristobal2'
-    command: 'build'
-    Dockerfile: '**/Dockerfile'
-    tags: latest
-  displayName: Build Image
-#
-#- task: Docker@2
-#  inputs:
-#    containerRegistry: 'Docker'
-#    repository: 'clagosu/pet-clinic'
-#    command: 'build'
-#    Dockerfile: '**/Dockerfile'
-#    tags: 'latest'
-#
-- script: | 
-    sudo apt-get install -y rpm
-    wget https://github.com/aquasecurity/trivy/releases/download/v0.27.1/trivy_0.27.1_Linux-64bit.deb
-    sudo dpkg -i trivy_0.27.1_Linux-64bit.deb
-    trivy image cristobalfajardo/devops-cristobal2:latest
-  displayName: Image Scan
-#- task: Docker@2
-#  inputs:
-#    containerRegistry: 'Docker'
-#    repository: 'clagosu/pet-clinic'
-#    command: 'push'
-#    tags: 'latest'
-- task: Docker@2
-  displayName: Docker push
-  inputs:
-    containerRegistry: 'Docker'
-    repository: 'cristobalfajardo/devops-cristobal2'
-    command: 'push'
-    tags: 'latest'
+    - task: SonarCloudPrepare@1
+      inputs:
+        SonarCloud: 'sonar-conexion2'
+        organization: 'cristobalfajardo'
+        projectKey: 'CristobalFajardo_spring-boot-kubernetes'
+        projectName: 'cristobalfajardo'
+    - task: Maven@4
+      inputs:
+        mavenPomFile: 'pom.xml'
+        publishJUnitResults: true
+        testResultsFiles: '**/surefire-reports/TEST-*.xml'
+        javaHomeOption: 'JDKVersion'
+        mavenVersionOption: 'Default'
+        sonarQubeRunAnalysis: true
+- stage: Test 
+  jobs:
+  - job: sonar
+    displayName: 'Build'
+    steps:
+      - task: dependency-check-build-task@6
+        inputs:
+          projectName: 'spring-boot-kubernetes'
+          scanPath: '$(Build.ArtifactStagingDirectory)'
+          format: 'HTML'
+      - task: DockerInstaller@0
+        inputs:
+          dockerVersion: '17.09.0-ce'
+- stage: Test2
+  jobs:
+  - job: sonar2
+    displayName: 'Build2'
+    steps:
+    - task: Docker@2
+      inputs:
+        containerRegistry: 'Docker'
+        command: 'login'
+    - task: Docker@2
+      inputs:
+        containerRegistry: 'Docker'
+        repository: 'cristobalfajardo/devops-cristobal2'
+        command: 'build'
+        Dockerfile: '**/Dockerfile'
+        tags: latest
+      displayName: Build Image    
+    - script: | 
+        sudo apt-get install -y rpm
+        wget https://github.com/aquasecurity/trivy/releases/download/v0.27.1/trivy_0.27.1_Linux-64bit.deb
+        sudo dpkg -i trivy_0.27.1_Linux-64bit.deb
+        trivy image cristobalfajardo/devops-cristobal2:latest
+      displayName: Image Scan
+    - task: Docker@2
+      displayName: Docker push
+      inputs:
+        containerRegistry: 'Docker'
+        repository: 'cristobalfajardo/devops-cristobal2'
+        command: 'push'
+        tags: 'latest'
