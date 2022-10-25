@@ -2,15 +2,6 @@ pool:
   vmImage: ubuntu-latest
 
 steps:
-#- task: Gradle@3
-#  inputs:
-#    gradleWrapperFile: 'gradlew'
-#    tasks: 'build'
-#    publishJUnitResults: true
-#    testResultsFiles: '**/TEST-*.xml'
-#    javaHomeOption: 'JDKVersion'
-#    sonarQubeRunAnalysis: false
-#    spotBugsAnalysis: false
 - task: Maven@4
   inputs:
     mavenPomFile: 'pom.xml'
@@ -26,7 +17,6 @@ steps:
   inputs:
     SonarCloud: 'sonar-conexion2'
     organization: 'cristobalfajardo'
-    #scannerMode: 'MSBuild'
     projectKey: 'CristobalFajardo_spring-boot-kubernetes'
     projectName: 'cristobalfajardo'
     
@@ -61,12 +51,12 @@ steps:
 #
 #
 
-#- task: dependency-check-build-task@6
-#  inputs:
-#    projectName: 'spring-boot-kubernetes'
-#    scanPath: '$(Build.SourcesDirectory)/build/libs'
-#    format: 'HTML'
-#
+- task: dependency-check-build-task@6
+  inputs:
+    projectName: 'spring-boot-kubernetes'
+    scanPath: '$(Build.ArtifactStagingDirectory)'
+    format: 'HTML'
+
 - task: DockerInstaller@0
   inputs:
     dockerVersion: '17.09.0-ce'
