@@ -106,14 +106,14 @@ stages:
         effectivePomSkip: false
         sonarQubeRunAnalysis: false
     
-    - task: Maven@3
-      inputs:
-        mavenPomFile: 'pom.xml'
-        publishJUnitResults: true
-        testResultsFiles: '*/surefire-reports/TEST-.xml'
-        javaHomeOption: 'JDKVersion'
-        mavenVersionOption: 'Default'
-        sonarQubeRunAnalysis: true
+    #- task: Maven@3
+     # inputs:
+      #  mavenPomFile: 'pom.xml'
+       # publishJUnitResults: true
+       # testResultsFiles: '*/surefire-reports/TEST-.xml'
+       # javaHomeOption: 'JDKVersion'
+       # mavenVersionOption: 'Default'
+       # sonarQubeRunAnalysis: true
 
     - task: DockerInstaller@0
       inputs:
