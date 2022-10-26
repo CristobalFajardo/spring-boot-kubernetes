@@ -72,6 +72,7 @@ stages:
         projectName: 'spring-boot-kubernetes'
         scanPath: '$(Build.ArtifactStagingDirectory)'
         format: 'HTML'
+
     - task: DockerInstaller@0
       inputs:
         dockerVersion: '17.09.0-ce'
@@ -88,6 +89,12 @@ stages:
         Dockerfile: '**/Dockerfile'
         tags: latest
       displayName: Build Image
+      
+- stage: ContainerSecurity 
+  jobs:
+  - job: ContainerSecurity
+    displayName: 'ContainerSecurity'
+    steps:
 
     - script: | 
         sudo apt-get install -y rpm
