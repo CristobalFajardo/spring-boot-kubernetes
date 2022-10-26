@@ -51,14 +51,61 @@ stages:
         effectivePomSkip: false
         sonarQubeRunAnalysis: false
 
-    - task: SonarCloudPrepare@1
-      inputs:
-        SonarCloud: 'sonar-conexion2'
-        organization: 'cristobalfajardo'
-        projectKey: 'CristobalFajardo_spring-boot-kubernetes'
-        projectName: 'cristobalfajardo'
+    #- task: SonarCloudPrepare@1
+    #  inputs:
+    #    SonarCloud: 'sonar-conexion2'
+    #    organization: 'cristobalfajardo'
+    #    projectKey: 'CristobalFajardo_spring-boot-kubernetes'
+    #    projectName: 'cristobalfajardo'
     
 
+    #- task: Maven@3
+    #  inputs:
+    #    mavenPomFile: 'pom.xml'
+    #    publishJUnitResults: true
+    #    testResultsFiles: '*/surefire-reports/TEST-.xml'
+    #    javaHomeOption: 'JDKVersion'
+    #    mavenVersionOption: 'Default'
+    #    sonarQubeRunAnalysis: true
+    - task: dependency-check-build-task@6
+      inputs:
+        projectName: 'spring-boot-kubernetes'
+        scanPath: '$(Build.ArtifactStagingDirectory)'
+        format: 'HTML'
+
+    #- task: DockerInstaller@0
+    #  inputs:
+    #    dockerVersion: '17.09.0-ce'
+
+    #- task: Docker@2
+    #  inputs:
+    #    containerRegistry: 'Docker'
+    #    command: 'login'
+    #- task: Docker@2
+    #  inputs:
+    #    containerRegistry: 'Docker'
+    #    repository: 'cristobalfajardo/devops-cristobal2'
+    #    command: 'build'
+    #    Dockerfile: '**/Dockerfile'
+    #    tags: latest
+    #  displayName: Build Image
+      
+- stage: ContainerSecurity 
+  jobs:
+  - job: ContainerSecurity
+    displayName: 'ContainerSecurity'
+    steps:
+    - task: Maven@3
+      inputs:
+        mavenPomFile: 'pom.xml'
+        publishJUnitResults: true
+        testResultsFiles: '*/surefire-reports/TEST-.xml'
+        javaHomeOption: 'JDKVersion'
+        mavenVersionOption: 'Default'
+        mavenAuthenticateFeed: false
+        effectivePomSkip: false
+        sonarQubeRunAnalysis: false
+    
     - task: Maven@3
       inputs:
         mavenPomFile: 'pom.xml'
@@ -67,11 +114,6 @@ stages:
         javaHomeOption: 'JDKVersion'
         mavenVersionOption: 'Default'
         sonarQubeRunAnalysis: true
-    - task: dependency-check-build-task@6
-      inputs:
-        projectName: 'spring-boot-kubernetes'
-        scanPath: '$(Build.ArtifactStagingDirectory)'
-        format: 'HTML'
 
     - task: DockerInstaller@0
       inputs:
@@ -89,12 +131,6 @@ stages:
         Dockerfile: '**/Dockerfile'
         tags: latest
       displayName: Build Image
-      
-- stage: ContainerSecurity 
-  jobs:
-  - job: ContainerSecurity
-    displayName: 'ContainerSecurity'
-    steps:
 
     - script: | 
         sudo apt-get install -y rpm
