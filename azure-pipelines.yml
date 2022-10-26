@@ -35,6 +35,11 @@ stages:
         javaHomeOption: 'JDKVersion'
         mavenVersionOption: 'Default'
         sonarQubeRunAnalysis: true
+- stage: SCA 
+  jobs:
+  - job: SCA
+    displayName: 'SCA'
+    steps:
     - task: dependency-check-build-task@6
       inputs:
         projectName: 'spring-boot-kubernetes'
