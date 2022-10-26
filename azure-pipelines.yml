@@ -40,6 +40,33 @@ stages:
   - job: SCA
     displayName: 'SCA'
     steps:
+    - task: Maven@3
+      inputs:
+        mavenPomFile: 'pom.xml'
+        publishJUnitResults: true
+        testResultsFiles: '*/surefire-reports/TEST-.xml'
+        javaHomeOption: 'JDKVersion'
+        mavenVersionOption: 'Default'
+        mavenAuthenticateFeed: false
+        effectivePomSkip: false
+        sonarQubeRunAnalysis: false
+
+    - task: SonarCloudPrepare@1
+      inputs:
+        SonarCloud: 'sonar-conexion2'
+        organization: 'cristobalfajardo'
+        projectKey: 'CristobalFajardo_spring-boot-kubernetes'
+        projectName: 'cristobalfajardo'
+    
+
+    - task: Maven@3
+      inputs:
+        mavenPomFile: 'pom.xml'
+        publishJUnitResults: true
+        testResultsFiles: '*/surefire-reports/TEST-.xml'
+        javaHomeOption: 'JDKVersion'
+        mavenVersionOption: 'Default'
+        sonarQubeRunAnalysis: true
     - task: dependency-check-build-task@6
       inputs:
         projectName: 'spring-boot-kubernetes'
