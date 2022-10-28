@@ -49,15 +49,28 @@ stages:
         extraProperties: |
           sonar.coverage.jacoco.xmlReportPaths=$(Pipeline.Workspace)/appJar/build/reports/jacoco/test/jacocoTestReport.xml
       displayName: 'Jacoco Preparing Sonarqube Environment'
-    - task: Gradle@3
-      displayName: 'Analyze current Branch'
+    - task: Maven@4
       inputs:
-        gradleWrapperFile: 'gradlew'
-        tasks: "sonarqube"
+        mavenPomFile: 'pom.xml'
+        publishJUnitResults: true
+        testResultsFiles: '**/surefire-reports/TEST-*.xml'
+        codeCoverageToolOption: 'JaCoCo'
         javaHomeOption: 'JDKVersion'
+        mavenVersionOption: 'Default'
+        mavenAuthenticateFeed: false
+        effectivePomSkip: false
         sonarQubeRunAnalysis: true
-        sqGradlePluginVersionChoice: 'specify'
-        sonarQubeGradlePluginVersion: '3.3'
+        isJacocoCoverageReportXML: true
+        sqMavenPluginVersionChoice: 'latest'
+   #- task: Gradle@3
+   #   displayName: 'Analyze current Branch'
+   #   inputs:
+   #     gradleWrapperFile: 'gradlew'
+    #    tasks: "sonarqube"
+    #    javaHomeOption: 'JDKVersion'
+    #    sonarQubeRunAnalysis: true
+    #    sqGradlePluginVersionChoice: 'specify'
+    #    sonarQubeGradlePluginVersion: '3.3'
     - task: SonarCloudPublish@1
       inputs:
         pollingTimeoutSec: '300'
