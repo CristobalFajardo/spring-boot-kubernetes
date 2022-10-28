@@ -25,8 +25,50 @@ stages:
         organization: 'cristobalfajardo'
         projectKey: 'CristobalFajardo_spring-boot-kubernetes'
         projectName: 'cristobalfajardo'
-    
+        
+    - task: CopyFiles@2
+      displayName: Copiar archivos
+      inputs:
+        sourceFolder: '$(Build.SourcesDirectory)'
+        contents: |
+            **/build/libs/*.jar
+            **/build/**/*.xml
+        targetFolder: '$(Build.ArtifactStagingDirectory)'
+    - task: PublishBuildArtifacts@1
+      displayName: Publica artefactos
+      inputs:
+        pathToPublish: '$(Build.ArtifactStagingDirectory)'
+        artifactName: appJar
+        publishLocation: 'Container'
+    - task: SonarCloudPrepare@1
+      inputs:
+        SonarCloud: 'sonar-conexion2'
+        organization: 'cristobalfajardo'
+        projectKey: 'CristobalFajardo_spring-boot-kubernetes'
+        projectName: 'cristobalfajardo'
+        extraProperties: |
+          sonar.coverage.jacoco.xmlReportPaths=$(Pipeline.Workspace)/appJar/build/reports/jacoco/test/jacocoTestReport.xml
+      displayName: 'Jacoco Preparing Sonarqube Environment'
+    - task: Gradle@3
+      displayName: 'Analyze current Branch'
+      inputs:
+        gradleWrapperFile: 'gradlew'
+        tasks: "sonarqube"
+        javaHomeOption: 'JDKVersion'
+        sonarQubeRunAnalysis: true
+        sqGradlePluginVersionChoice: 'specify'
+        sonarQubeGradlePluginVersion: '3.3'
+    - task: SonarCloudPublish@1
+      inputs:
+        pollingTimeoutSec: '300'
+      displayName: 'Publish Analysis Results'
 
+    - task: sonarcloud-buildbreaker@2
+      inputs:
+        SonarCloud: 'sonar-conexion2'
+        organization: 'cristobalfajardo'
+
+##
     - task: Maven@4
       inputs:
         mavenPomFile: 'pom.xml'
