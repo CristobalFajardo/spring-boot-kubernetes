@@ -23,9 +23,9 @@ stages:
         mavenPomFile: ‘pom.xml’
         publishJUnitResults: true
         testResultsFiles: ‘**/surefire-reports/TEST-*.xml’
-        codeCoverageToolOption: ‘JaCoCo’
-        javaHomeOption: ‘JDKVersion’
-        mavenVersionOption: ‘Default’
+        codeCoverageToolOption: 'JaCoCo'
+        javaHomeOption: 'JDKVersion'
+        mavenVersionOption: 'Default'
         mavenAuthenticateFeed: false
         effectivePomSkip: false
         sonarQubeRunAnalysis: false
@@ -33,7 +33,7 @@ stages:
       inputs:
         SonarCloud: 'sonar-conexion2'
         organization: 'cristobalfajardo'
-        scannerMode: ‘MSBuild’
+        scannerMode: 'MSBuild'
         projectKey: 'CristobalFajardo_spring-boot-kubernetes'
         projectName: 'cristobalfajardo'
     - task: Maven@4
@@ -42,12 +42,12 @@ stages:
         mavenPomFile: ‘pom.xml’
         publishJUnitResults: true
         testResultsFiles: ‘**/surefire-reports/TEST-*.xml’
-        javaHomeOption: ‘JDKVersion’
-        mavenVersionOption: ‘Default’
+        javaHomeOption: 'JDKVersion'
+        mavenVersionOption: 'Default'
         mavenAuthenticateFeed: false
         effectivePomSkip: false
         sonarQubeRunAnalysis: true
-        sqMavenPluginVersionChoice: ‘latest’
+        sqMavenPluginVersionChoice: 'latest'
     - task: SonarCloudPublish@1
       inputs:
         pollingTimeoutSec: ‘300’
