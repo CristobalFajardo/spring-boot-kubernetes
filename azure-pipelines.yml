@@ -19,13 +19,6 @@ stages:
         effectivePomSkip: false
         sonarQubeRunAnalysis: false   
 
-    - task: SonarCloudPrepare@1
-      inputs:
-        SonarCloud: 'sonar-conexion2'
-        organization: 'cristobalfajardo'
-        projectKey: 'CristobalFajardo_spring-boot-kubernetes'
-        projectName: 'cristobalfajardo'
-        
     - task: CopyFiles@2
       displayName: Copiar archivos
       inputs:
@@ -35,7 +28,6 @@ stages:
             **/build/**/*.xml
         targetFolder: '$(Build.ArtifactStagingDirectory)'
     - task: PublishBuildArtifacts@1
-      displayName: Publica artefactos
       inputs:
         pathToPublish: '$(Build.ArtifactStagingDirectory)'
         artifactName: appJar
@@ -46,9 +38,27 @@ stages:
         organization: 'cristobalfajardo'
         projectKey: 'CristobalFajardo_spring-boot-kubernetes'
         projectName: 'cristobalfajardo'
+        
+        
+    - task: SonarCloudPrepare@1
+      inputs:
+        SonarCloud: 'sonar-conexion2'
+        organization: 'cristobalfajardo'
+        projectKey: 'CristobalFajardo_spring-boot-kubernetes'
+        projectName: 'cristobalfajardo'
         extraProperties: |
           sonar.coverage.jacoco.xmlReportPaths=$(Pipeline.Workspace)/appJar/build/reports/jacoco/test/jacocoTestReport.xml
       displayName: 'Jacoco Preparing Sonarqube Environment'
+    - task: DownloadBuildArtifacts@0
+      inputs:
+        buildType: 'current'
+        downloadType: 'single'
+        artifactName: 'appJar'
+        downloadPath: '$(Pipeline.Workspace)'
+      displayName: Descarga Jar
+    
+    - script: "mkdir -p build/libs; mv $(Pipeline.Workspace)/appJar/build/libs/ build/; chmod -R 555 build/libs"  
+      displayName:  Se mueve JAR a carpeta raiz
     - task: Maven@4
       inputs:
         mavenPomFile: 'pom.xml'
