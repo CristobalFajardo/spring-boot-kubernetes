@@ -18,7 +18,43 @@ stages:
         mavenAuthenticateFeed: false
         effectivePomSkip: false
         sonarQubeRunAnalysis: false   
-
+    - task: Maven@4
+      inputs:
+        mavenPomFile: ‘pom.xml’
+        publishJUnitResults: true
+        testResultsFiles: ‘**/surefire-reports/TEST-*.xml’
+        codeCoverageToolOption: ‘JaCoCo’
+        javaHomeOption: ‘JDKVersion’
+        mavenVersionOption: ‘Default’
+        mavenAuthenticateFeed: false
+        effectivePomSkip: false
+        sonarQubeRunAnalysis: false
+    - task: SonarCloudPrepare@1
+      inputs:
+        SonarCloud: 'sonar-conexion2'
+        organization: 'cristobalfajardo'
+        scannerMode: ‘MSBuild’
+        projectKey: 'CristobalFajardo_spring-boot-kubernetes'
+        projectName: 'cristobalfajardo'
+    - task: Maven@4
+      displayName: ‘Maven Sonar Cloud Analisys’
+      inputs:
+        mavenPomFile: ‘pom.xml’
+        publishJUnitResults: true
+        testResultsFiles: ‘**/surefire-reports/TEST-*.xml’
+        javaHomeOption: ‘JDKVersion’
+        mavenVersionOption: ‘Default’
+        mavenAuthenticateFeed: false
+        effectivePomSkip: false
+        sonarQubeRunAnalysis: true
+        sqMavenPluginVersionChoice: ‘latest’
+    - task: SonarCloudPublish@1
+      inputs:
+        pollingTimeoutSec: ‘300’
+    - task: sonarcloud-buildbreaker@2
+      inputs:
+        SonarCloud: 'sonar-conexion2'
+        organization: 'cristobalfajardo'
     - task: CopyFiles@2
       displayName: Copiar archivos
       inputs:
